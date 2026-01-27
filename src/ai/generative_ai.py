@@ -11,7 +11,7 @@ import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
 try:
-    import google.generativeai as genai
+    from google import genai
     GEMINI_AVAILABLE = True
 except ImportError:
     GEMINI_AVAILABLE = False
@@ -45,8 +45,7 @@ class GenerativeAI:
             return
         
         try:
-            genai.configure(api_key=self.api_key)
-            self.client = genai.GenerativeModel(self.model)
+            self.client = genai.Client(api_key=self.api_key)
             logger.success(f"✓ Gemini AI initialized successfully with model: {self.model}")
         except Exception as e:
             logger.error(f"Failed to initialize Gemini client: {e}")
@@ -74,18 +73,18 @@ class GenerativeAI:
             if system_message:
                 full_prompt = f"{system_message}\n\n{prompt}"
             
-            response = self.client.generate_content(
-                full_prompt,
-                generation_config=genai.types.GenerationConfig(
-                    temperature=AI_TEMPERATURE,
-                    max_output_tokens=AI_MAX_TOKENS,
-                )
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=full_prompt,
+                config={
+                    'temperature': AI_TEMPERATURE,
+                    'max_output_tokens': AI_MAX_TOKENS,
+                }
             )
             
-            # Check if response was blocked
-            if not response.text:
-                if hasattr(response, 'prompt_feedback'):
-                    logger.warning(f"Response blocked: {response.prompt_feedback}")
+            # Check if response was generated
+            if not response or not response.text:
+                logger.warning(f"Response empty or blocked")
                 return "[Response Blocked] The AI response was blocked. Please try rephrasing your question."
             
             logger.success("✓ Gemini response generated successfully")

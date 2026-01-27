@@ -1103,8 +1103,15 @@ def render_ai_insights_page(all_data, all_metrics, risk_engine):
         st.subheader("Portfolio Metrics at a Glance")
         
         total_studies = len(all_metrics)
-        total_subjects = sum(m.get("total_subjects", 0) for m in all_metrics.values())
+        total_subjects = sum(m.get("subject_metrics", pd.DataFrame()).shape[0] for m in all_metrics.values())
         total_sites = sum(len(m.get("site_metrics", [])) for m in all_metrics.values())
+        
+        # Calculate average DQI across all subjects
+        all_dqi_scores = []
+        for m in all_metrics.values():
+            if "subject_metrics" in m and "dqi_score" in m["subject_metrics"].columns:
+                all_dqi_scores.extend(m["subject_metrics"]["dqi_score"].dropna().tolist())
+        avg_dqi = sum(all_dqi_scores) / len(all_dqi_scores) if all_dqi_scores else 0
         
         col1, col2, col3, col4 = st.columns(4)
         with col1:
@@ -1114,7 +1121,6 @@ def render_ai_insights_page(all_data, all_metrics, risk_engine):
         with col3:
             st.metric("Total Sites", total_sites)
         with col4:
-            avg_dqi = sum(m.get("avg_dqi", 0) for m in all_metrics.values()) / total_studies if total_studies > 0 else 0
             st.metric("Avg DQI Score", f"{avg_dqi:.1f}")
     
     with tab2:
@@ -1195,11 +1201,23 @@ Provide actionable, prioritized recommendations."""
                         st.markdown("---")
                         if st.button("Get Detailed Recommendations", key="detailed_recs"):
                             with st.spinner("Generating detailed recommendations..."):
+                                # Calculate metrics from subject_metrics
+                                subject_df = study_metrics.get("subject_metrics", pd.DataFrame())
+                                total_subj = len(subject_df)
+                                if not subject_df.empty:
+                                    clean_rt = (subject_df["is_clean_patient"].sum() / len(subject_df) * 100) if "is_clean_patient" in subject_df.columns else 0
+                                    avg_dqi_val = subject_df["dqi_score"].mean() if "dqi_score" in subject_df.columns else 0
+                                    open_q = subject_df["open_queries"].sum() if "open_queries" in subject_df.columns else 0
+                                else:
+                                    clean_rt = 0
+                                    avg_dqi_val = 0
+                                    open_q = 0
+                                
                                 prompt = f"""Based on this study's performance:
-- Total Subjects: {study_metrics.get('total_subjects', 0)}
-- Clean Rate: {study_metrics.get('pct_clean', 0):.1f}%
-- Open Queries: {study_metrics.get('total_open_queries', 0)}
-- Avg DQI: {study_metrics.get('avg_dqi', 0):.1f}
+- Total Subjects: {total_subj}
+- Clean Rate: {clean_rt:.1f}%
+- Open Queries: {open_q}
+- Avg DQI: {avg_dqi_val:.1f}
 
 Provide:
 1. 3 specific improvement actions
@@ -1216,9 +1234,20 @@ Be specific and actionable."""
                                 st.markdown(f"### Detailed Recommendations\n\n{recommendations}")
             
             with col2:
-                st.metric("Total Subjects", study_metrics.get("total_subjects", 0))
-                st.metric("Clean Rate", f"{study_metrics.get('pct_clean', 0):.1f}%")
-                st.metric("Avg DQI", f"{study_metrics.get('avg_dqi', 0):.1f}")
+                # Calculate metrics from subject_metrics DataFrame
+                subject_df = study_metrics.get("subject_metrics", pd.DataFrame())
+                total_subjects = len(subject_df)
+                
+                if not subject_df.empty:
+                    clean_rate = (subject_df["is_clean_patient"].sum() / len(subject_df) * 100) if "is_clean_patient" in subject_df.columns else 0
+                    avg_dqi = subject_df["dqi_score"].mean() if "dqi_score" in subject_df.columns else 0
+                else:
+                    clean_rate = 0
+                    avg_dqi = 0
+                
+                st.metric("Total Subjects", total_subjects)
+                st.metric("Clean Rate", f"{clean_rate:.1f}%")
+                st.metric("Avg DQI", f"{avg_dqi:.1f}")
     
     with tab4:
         st.subheader("🔍 Deep Dive Analysis")
@@ -1359,6 +1388,20 @@ def render_upload_analyze():
         help="Upload all available Excel reports for comprehensive analysis"
     )
     
+    # Initialize session state for uploaded data
+    if 'uploaded_study_name' not in st.session_state:
+        st.session_state.uploaded_study_name = None
+    if 'uploaded_study_df' not in st.session_state:
+        st.session_state.uploaded_study_df = None
+    if 'uploaded_study_metrics' not in st.session_state:
+        st.session_state.uploaded_study_metrics = None
+    if 'uploaded_all_metrics' not in st.session_state:
+        st.session_state.uploaded_all_metrics = None
+    if 'uploaded_canonical_entities' not in st.session_state:
+        st.session_state.uploaded_canonical_entities = None
+    if 'uploaded_risk_engine' not in st.session_state:
+        st.session_state.uploaded_risk_engine = None
+    
     if uploaded_files and study_name:
         st.success(f"✅ {len(uploaded_files)} file(s) uploaded for {study_name}")
         
@@ -1368,7 +1411,7 @@ def render_upload_analyze():
                 st.write(f"{i}. {file.name} ({file.size / 1024:.1f} KB)")
         
         # Analyze button
-        if st.button("🔍 Analyze Data", type="primary"):
+        if st.button("🔍 Analyze Data", type="primary", key="analyze_uploaded_data"):
             with st.spinner(f"Processing {study_name}..."):
                 try:
                     # Process uploaded files
@@ -1415,49 +1458,13 @@ def render_upload_analyze():
                             # Risk intelligence
                             risk_engine = RiskIntelligence(all_metrics)
                             
-                            st.markdown("---")
-                            
-                            # Display insights in tabs
-                            tab1, tab2, tab3, tab4 = st.tabs([
-                                "📊 Overview",
-                                "🏥 Site Performance", 
-                                "📝 Query Management",
-                                "⚠️ Action Items"
-                            ])
-                            
-                            with tab1:
-                                render_uploaded_data_overview(study_name, study_metrics, canonical_entities)
-                            
-                            with tab2:
-                                if "site_metrics" in study_metrics and "subject_metrics" in study_metrics:
-                                    render_cra_site_performance(
-                                        study_metrics["site_metrics"],
-                                        study_metrics["subject_metrics"],
-                                        study_df
-                                    )
-                                else:
-                                    st.info("Site metrics not available")
-                            
-                            with tab3:
-                                if "subject_metrics" in study_metrics and "site_metrics" in study_metrics:
-                                    render_cra_query_management(
-                                        study_metrics["subject_metrics"],
-                                        study_metrics["site_metrics"]
-                                    )
-                                else:
-                                    st.info("Query metrics not available")
-                            
-                            with tab4:
-                                if "subject_metrics" in study_metrics and "site_metrics" in study_metrics:
-                                    render_cra_action_items(
-                                        study_metrics["subject_metrics"],
-                                        study_metrics["site_metrics"],
-                                        study_metrics,
-                                        risk_engine,
-                                        study_name
-                                    )
-                                else:
-                                    st.info("Action items not available")
+                            # Store in session state
+                            st.session_state.uploaded_study_name = study_name
+                            st.session_state.uploaded_study_df = study_df
+                            st.session_state.uploaded_study_metrics = study_metrics
+                            st.session_state.uploaded_all_metrics = all_metrics
+                            st.session_state.uploaded_canonical_entities = canonical_entities
+                            st.session_state.uploaded_risk_engine = risk_engine
                             
                         else:
                             st.error("❌ Failed to load data. Please check your file formats.")
@@ -1465,6 +1472,96 @@ def render_upload_analyze():
                 except Exception as e:
                     st.error(f"❌ Error processing data: {str(e)}")
                     st.exception(e)
+        
+        # Display results if data has been analyzed
+        if st.session_state.uploaded_study_name == study_name and st.session_state.uploaded_study_metrics is not None:
+            study_df = st.session_state.uploaded_study_df
+            study_metrics = st.session_state.uploaded_study_metrics
+            all_metrics = st.session_state.uploaded_all_metrics
+            canonical_entities = st.session_state.uploaded_canonical_entities
+            risk_engine = st.session_state.uploaded_risk_engine
+            
+            st.markdown("---")
+            
+            # Initialize active tab in session state
+            if 'uploaded_active_tab' not in st.session_state:
+                st.session_state.uploaded_active_tab = "📊 Overview"
+            
+            # Create tab selection buttons
+            tab_options = [
+                "📊 Overview",
+                "🏥 Site Performance", 
+                "📝 Query Management",
+                "⚠️ Action Items",
+                "📋 Executive Summary",
+                "⚠️ Critical Actions",
+                "📊 Study-Level Insights",
+                "🔍 Deep Dive Analysis",
+                "💬 Ask AI"
+            ]
+            
+            # Create columns for tab selection
+            cols = st.columns(len(tab_options))
+            for idx, (col, tab_name) in enumerate(zip(cols, tab_options)):
+                with col:
+                    if st.button(tab_name, key=f"tab_btn_{idx}", use_container_width=True):
+                        st.session_state.uploaded_active_tab = tab_name
+                        st.rerun()
+            
+            st.markdown("---")
+            
+            # Display content based on active tab
+            active_tab = st.session_state.uploaded_active_tab
+            
+            if active_tab == "📊 Overview":
+                render_uploaded_data_overview(study_name, study_metrics, canonical_entities)
+            
+            elif active_tab == "🏥 Site Performance":
+                if "site_metrics" in study_metrics and "subject_metrics" in study_metrics:
+                    render_cra_site_performance(
+                        study_metrics["site_metrics"],
+                        study_metrics["subject_metrics"],
+                        study_df
+                    )
+                else:
+                    st.info("Site metrics not available")
+            
+            elif active_tab == "📝 Query Management":
+                if "subject_metrics" in study_metrics and "site_metrics" in study_metrics:
+                    render_cra_query_management(
+                        study_metrics["subject_metrics"],
+                        study_metrics["site_metrics"]
+                    )
+                else:
+                    st.info("Query metrics not available")
+            
+            elif active_tab == "⚠️ Action Items":
+                if "subject_metrics" in study_metrics and "site_metrics" in study_metrics:
+                    render_cra_action_items(
+                        study_metrics["subject_metrics"],
+                        study_metrics["site_metrics"],
+                        study_metrics,
+                        risk_engine,
+                        study_name
+                    )
+                else:
+                    st.info("Action items not available")
+            
+            # AI-Powered Insights Tabs
+            elif active_tab == "📋 Executive Summary":
+                render_uploaded_executive_summary(study_name, all_metrics)
+            
+            elif active_tab == "⚠️ Critical Actions":
+                render_uploaded_critical_actions(study_name, all_metrics)
+            
+            elif active_tab == "📊 Study-Level Insights":
+                render_uploaded_study_insights(study_name, study_metrics)
+            
+            elif active_tab == "🔍 Deep Dive Analysis":
+                render_uploaded_deep_dive(study_name, all_metrics)
+            
+            elif active_tab == "💬 Ask AI":
+                render_uploaded_ask_ai(study_name, study_metrics, study_df)
     
     elif uploaded_files and not study_name:
         st.warning("⚠️ Please enter a study name to continue")
@@ -1602,6 +1699,281 @@ def render_uploaded_data_overview(study_name, study_metrics, canonical_entities)
                     file_name=f"{study_name}_site_metrics_{pd.Timestamp.now().strftime('%Y%m%d')}.csv",
                     mime="text/csv"
                 )
+
+
+def render_uploaded_executive_summary(study_name, all_metrics):
+    """Render AI-powered executive summary for uploaded data"""
+    st.subheader("📋 Executive Summary")
+    st.markdown("*AI-generated insights powered by Google Gemini*")
+    
+    gen_ai = GenerativeAI()
+    
+    # Initialize session state for this summary
+    if 'uploaded_exec_summary' not in st.session_state:
+        st.session_state.uploaded_exec_summary = None
+    
+    if st.button("📋 Generate Executive Summary", key="upload_exec_summary", type="primary"):
+        with st.spinner("Analyzing your study with Gemini AI..."):
+            narrative = gen_ai.generate_executive_dashboard_narrative(all_metrics)
+            st.session_state.uploaded_exec_summary = narrative
+    
+    # Display the summary if it exists
+    if st.session_state.uploaded_exec_summary:
+        st.success("✅ Analysis Complete")
+        st.markdown(f"### Study Overview\n\n{st.session_state.uploaded_exec_summary}")
+    
+    # Key metrics display
+    st.markdown("---")
+    st.subheader("Key Metrics at a Glance")
+    
+    study_metrics = all_metrics.get(study_name, {})
+    subject_df = study_metrics.get("subject_metrics", pd.DataFrame())
+    
+    if not subject_df.empty:
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric("Total Subjects", len(subject_df))
+        
+        with col2:
+            clean_count = subject_df["is_clean_patient"].sum() if "is_clean_patient" in subject_df.columns else 0
+            clean_pct = (clean_count / len(subject_df) * 100) if len(subject_df) > 0 else 0
+            st.metric("Clean Data Rate", f"{clean_pct:.1f}%")
+        
+        with col3:
+            avg_dqi = subject_df["dqi_score"].mean() if "dqi_score" in subject_df.columns else 0
+            st.metric("Average DQI", f"{avg_dqi:.1f}")
+        
+        with col4:
+            high_risk = (subject_df["risk_level"] == "High").sum() if "risk_level" in subject_df.columns else 0
+            st.metric("High Risk Subjects", high_risk)
+
+
+def render_uploaded_critical_actions(study_name, all_metrics):
+    """Render critical actions for uploaded data"""
+    st.subheader("⚠️ Critical Actions Required")
+    st.markdown("*AI-prioritized action items*")
+    
+    gen_ai = GenerativeAI()
+    study_metrics = all_metrics.get(study_name, {})
+    subject_df = study_metrics.get("subject_metrics", pd.DataFrame())
+    
+    if not subject_df.empty and "risk_level" in subject_df.columns:
+        high_risk = subject_df[subject_df["risk_level"] == "High"]
+        
+        if not high_risk.empty:
+            st.warning(f"🚨 Found {len(high_risk)} high-risk items requiring immediate attention")
+            
+            # Show top high-risk subjects
+            st.write("### Top High-Risk Subjects")
+            display_cols = ["subject_id", "site_id", "dqi_score", "open_queries", "missing_visits", "missing_pages"]
+            available_cols = [col for col in display_cols if col in high_risk.columns]
+            st.dataframe(high_risk[available_cols].head(10), use_container_width=True)
+            
+            if st.button("Generate Action Plan", key="upload_action_plan"):
+                with st.spinner("Generating prioritized action plan with Gemini AI..."):
+                    context = f"High-Risk Items in {study_name}:\n"
+                    for _, row in high_risk.head(10).iterrows():
+                        context += f"- Subject {row.get('subject_id', 'N/A')}, Site {row.get('site_id', 'N/A')}: DQI={row.get('dqi_score', 0):.1f}, Issues={row.get('open_queries', 0)}\n"
+                    
+                    prompt = f"""{context}
+
+Generate a prioritized action plan:
+1. Immediate actions (next 24-48 hours)
+2. Short-term actions (this week)
+3. Medium-term improvements (this month)
+
+For each action, specify:
+- What to do
+- Why it matters
+- Who should do it
+- Expected impact"""
+                    
+                    action_plan = gen_ai._generate_completion(
+                        prompt,
+                        "You are a clinical trial quality improvement consultant."
+                    )
+                    st.markdown(f"### Prioritized Action Plan\n\n{action_plan}")
+        else:
+            st.success("✅ No critical high-risk items found. Your study is performing well!")
+    else:
+        st.info("Risk assessment data not available")
+
+
+def render_uploaded_study_insights(study_name, study_metrics):
+    """Render AI study insights for uploaded data"""
+    st.subheader("📊 Study-Level Insights")
+    
+    gen_ai = GenerativeAI()
+    subject_df = study_metrics.get("subject_metrics", pd.DataFrame())
+    
+    if not subject_df.empty:
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            if st.button("Generate Study Analysis", key="upload_study_analysis"):
+                with st.spinner("Analyzing study with Gemini AI..."):
+                    summary = gen_ai.summarize_study_performance(study_name, study_metrics)
+                    st.success("✅ Analysis Complete")
+                    st.markdown(f"### Study Analysis\n\n{summary}")
+                    
+                    st.markdown("---")
+                    if st.button("Get Detailed Recommendations", key="upload_detailed_recs"):
+                        with st.spinner("Generating detailed recommendations..."):
+                            total_subj = len(subject_df)
+                            clean_rt = (subject_df["is_clean_patient"].sum() / len(subject_df) * 100) if "is_clean_patient" in subject_df.columns else 0
+                            avg_dqi_val = subject_df["dqi_score"].mean() if "dqi_score" in subject_df.columns else 0
+                            open_q = subject_df["open_queries"].sum() if "open_queries" in subject_df.columns else 0
+                            
+                            prompt = f"""Based on this study's performance:
+- Total Subjects: {total_subj}
+- Clean Rate: {clean_rt:.1f}%
+- Open Queries: {open_q}
+- Avg DQI: {avg_dqi_val:.1f}
+
+Provide:
+1. 3 specific improvement actions
+2. Expected impact of each action
+3. Implementation difficulty (Low/Medium/High)
+4. Estimated timeline for each
+
+Be specific and actionable."""
+                            
+                            recommendations = gen_ai._generate_completion(
+                                prompt,
+                                "You are a clinical trial quality improvement consultant."
+                            )
+                            st.markdown(f"### Detailed Recommendations\n\n{recommendations}")
+        
+        with col2:
+            st.metric("Total Subjects", len(subject_df))
+            clean_rate = (subject_df["is_clean_patient"].sum() / len(subject_df) * 100) if "is_clean_patient" in subject_df.columns else 0
+            st.metric("Clean Rate", f"{clean_rate:.1f}%")
+            avg_dqi = subject_df["dqi_score"].mean() if "dqi_score" in subject_df.columns else 0
+            st.metric("Avg DQI", f"{avg_dqi:.1f}")
+    else:
+        st.info("No subject data available for analysis")
+
+
+def render_uploaded_deep_dive(study_name, all_metrics):
+    """Render deep dive analysis for uploaded data"""
+    st.subheader("🔍 Deep Dive Analysis")
+    st.markdown("*Advanced AI-powered analysis of specific issues*")
+    
+    gen_ai = GenerativeAI()
+    study_metrics = all_metrics.get(study_name, {})
+    subject_df = study_metrics.get("subject_metrics", pd.DataFrame())
+    
+    analysis_type = st.selectbox(
+        "Select Analysis Type",
+        ["Query Hotspot Analysis", "Site Performance Patterns", "Data Completeness Trends", "Risk Factor Correlation"]
+    )
+    
+    if st.button("Run Deep Dive Analysis", key="upload_deep_dive"):
+        with st.spinner(f"Running {analysis_type} with Gemini AI..."):
+            if not subject_df.empty:
+                if analysis_type == "Query Hotspot Analysis":
+                    total_queries = subject_df["open_queries"].sum() if "open_queries" in subject_df.columns else 0
+                    context = f"Total open queries in {study_name}: {total_queries}\n"
+                    
+                    prompt = f"""{context}\nAnalyze query patterns and identify:
+1. Root causes of high query volumes
+2. Patterns in query distribution across sites
+3. Specific actions to reduce queries
+4. Expected timeline for improvements"""
+                
+                elif analysis_type == "Site Performance Patterns":
+                    sites = subject_df["site_id"].nunique() if "site_id" in subject_df.columns else 0
+                    context = f"Study {study_name} has {sites} sites\n"
+                    
+                    prompt = f"""{context}\nAnalyze site performance patterns:
+1. Identify top and bottom performing sites
+2. Common characteristics of high-performing sites
+3. Interventions for underperforming sites
+4. Best practices to replicate across sites"""
+                
+                elif analysis_type == "Data Completeness Trends":
+                    missing_v = subject_df["missing_visits"].sum() if "missing_visits" in subject_df.columns else 0
+                    missing_p = subject_df["missing_pages"].sum() if "missing_pages" in subject_df.columns else 0
+                    context = f"Missing visits: {missing_v}, Missing pages: {missing_p}\n"
+                    
+                    prompt = f"""{context}\nAnalyze data completeness:
+1. Primary drivers of missing data
+2. Impact on study timeline and quality
+3. Targeted interventions to improve completeness
+4. Monitoring strategy going forward"""
+                
+                else:  # Risk Factor Correlation
+                    high_risk = (subject_df["risk_level"] == "High").sum() if "risk_level" in subject_df.columns else 0
+                    context = f"High risk subjects: {high_risk}\n"
+                    
+                    prompt = f"""{context}\nAnalyze risk factors:
+1. What factors correlate with high risk?
+2. Are there patterns across sites or subjects?
+3. Predictive indicators for future risk
+4. Preventive measures to implement"""
+                
+                analysis = gen_ai._generate_completion(
+                    prompt,
+                    "You are a clinical trial data analytics expert."
+                )
+                st.markdown(f"### {analysis_type}\n\n{analysis}")
+            else:
+                st.warning("Insufficient data for deep dive analysis")
+
+
+def render_uploaded_ask_ai(study_name, study_metrics, study_df):
+    """Render Ask AI chatbot for uploaded data"""
+    st.subheader("💬 Ask AI About Your Study")
+    st.markdown("*Ask any question about your uploaded data*")
+    
+    gen_ai = GenerativeAI()
+    subject_df = study_metrics.get("subject_metrics", pd.DataFrame())
+    
+    # Provide some context about available data
+    with st.expander("ℹ️ What can I ask?"):
+        st.markdown("""
+        **Example questions:**
+        - What are the main quality issues in my study?
+        - How can I improve the clean data rate?
+        - Which sites need the most attention?
+        - What's causing the high query volume?
+        - How does my DQI score compare to industry standards?
+        - What should I prioritize this week?
+        - Are there any concerning trends in the data?
+        """)
+    
+    # Chat interface
+    user_question = st.text_area(
+        "Your Question:",
+        placeholder="e.g., What are the top 3 actions I should take to improve data quality?",
+        height=100
+    )
+    
+    if st.button("Ask AI", key="upload_ask_ai", type="primary"):
+        if user_question:
+            with st.spinner("Thinking..."):
+                # Build context about the study
+                context = f"""Study: {study_name}
+Total Subjects: {len(subject_df)}
+"""
+                if not subject_df.empty:
+                    if "dqi_score" in subject_df.columns:
+                        context += f"Average DQI: {subject_df['dqi_score'].mean():.1f}\n"
+                    if "is_clean_patient" in subject_df.columns:
+                        clean_pct = (subject_df["is_clean_patient"].sum() / len(subject_df) * 100)
+                        context += f"Clean Data Rate: {clean_pct:.1f}%\n"
+                    if "open_queries" in subject_df.columns:
+                        context += f"Total Open Queries: {subject_df['open_queries'].sum()}\n"
+                    if "risk_level" in subject_df.columns:
+                        high_risk = (subject_df["risk_level"] == "High").sum()
+                        context += f"High Risk Subjects: {high_risk}\n"
+                
+                answer = gen_ai.answer_natural_language_query(user_question, context)
+                st.success("✅ Answer:")
+                st.markdown(answer)
+        else:
+            st.warning("Please enter a question")
 
 
 def render_sidebar():

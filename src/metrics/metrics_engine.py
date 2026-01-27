@@ -315,8 +315,14 @@ class MetricsEngine:
     
     def assess_clean_patient_status(self, subject_row: pd.Series) -> bool:
         """
-        Assess if a patient meets clean patient criteria based on ACTUAL available data
-        A clean patient has NO data quality issues
+        Assess if a patient meets clean patient criteria
+        
+        Clean patient rule (exact specification):
+        - missing_visits == 0
+        - missing_pages == 0
+        - open_queries == 0
+        - pending_sdv == 0
+        - open_safety_issues == 0
         
         Args:
             subject_row: Series representing a single subject
@@ -326,41 +332,23 @@ class MetricsEngine:
         """
         is_clean = True
         
-        # Check missing visits - patient is NOT clean if they have ANY missing visits
-        if "missing_visits" in subject_row.index:
-            missing_visits = pd.to_numeric(subject_row["missing_visits"], errors='coerce')
-            if pd.notna(missing_visits) and missing_visits > 0:
-                is_clean = False
+        # Check the 5 required criteria only
+        required_criteria = {
+            "missing_visits": 0,
+            "missing_pages": 0,
+            "open_queries": 0,
+            "pending_sdv": 0,
+            "open_safety_issues": 0
+        }
         
-        # Check missing pages - patient is NOT clean if they have ANY missing pages
-        if "missing_pages" in subject_row.index:
-            missing_pages = pd.to_numeric(subject_row["missing_pages"], errors='coerce')
-            if pd.notna(missing_pages) and missing_pages > 0:
-                is_clean = False
-        
-        # Check open queries - patient is NOT clean if they have ANY open queries
-        if "open_queries" in subject_row.index:
-            open_queries = pd.to_numeric(subject_row["open_queries"], errors='coerce')
-            if pd.notna(open_queries) and open_queries > 0:
-                is_clean = False
-        
-        # Check uncoded terms - patient is NOT clean if they have ANY uncoded terms
-        if "uncoded_terms" in subject_row.index:
-            uncoded = pd.to_numeric(subject_row["uncoded_terms"], errors='coerce')
-            if pd.notna(uncoded) and uncoded > 0:
-                is_clean = False
-        
-        # Check open LNR issues
-        if "open_lnr_issues" in subject_row.index:
-            lnr_issues = pd.to_numeric(subject_row["open_lnr_issues"], errors='coerce')
-            if pd.notna(lnr_issues) and lnr_issues > 0:
-                is_clean = False
-        
-        # Check inactivated forms
-        if "inactivated_forms" in subject_row.index:
-            inactivated = pd.to_numeric(subject_row["inactivated_forms"], errors='coerce')
-            if pd.notna(inactivated) and inactivated > 0:
-                is_clean = False
+        for col, threshold in required_criteria.items():
+            if col in subject_row.index:
+                value = pd.to_numeric(subject_row[col], errors='coerce')
+                if pd.isna(value):
+                    value = 0
+                if value > threshold:
+                    is_clean = False
+                    break
         
         return is_clean
     
@@ -378,6 +366,15 @@ class MetricsEngine:
             return pd.DataFrame()
         
         df = edc_data.copy()
+        
+        # Check if is_clean_patient already calculated by multi_file_loader
+        if "is_clean_patient" in df.columns:
+            logger.info(f"Clean patient flag already exists from loader - using existing values")
+            clean_count = df["is_clean_patient"].sum()
+            total_count = len(df)
+            pct_clean = (clean_count / total_count * 100) if total_count > 0 else 0
+            logger.info(f"Clean patients: {clean_count}/{total_count} ({pct_clean:.1f}%)")
+            return df
         
         # Ensure all required columns exist
         required_cols = list(CLEAN_PATIENT_CRITERIA.keys())

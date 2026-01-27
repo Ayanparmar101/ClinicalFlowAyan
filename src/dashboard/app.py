@@ -73,6 +73,10 @@ def load_and_process_data(_version=5):  # Increment this to bust cache
             if study_df is not None and not study_df.empty:
                 all_data[study_name] = study_df
         
+        # Check for uploaded data in session state
+        if 'uploaded_study_name' in st.session_state and st.session_state.uploaded_study_name:
+            all_data[st.session_state.uploaded_study_name] = st.session_state.uploaded_study_df
+        
         if not all_data:
             return None, None, None, None
         
@@ -115,7 +119,7 @@ def render_executive_dashboard(all_metrics, risk_engine):
     st.header("📊 Executive Dashboard")
     
     if not all_metrics:
-        st.warning("No data available. Please place data files in the /data directory.")
+        st.info("📤 No data loaded yet. Go to **'Upload & Analyze'** to upload your study files and view them here!")
         return
     
     # Summary metrics
@@ -188,7 +192,7 @@ def render_study_view(all_metrics, risk_engine):
     st.header("🔍 Study Analysis")
     
     if not all_metrics:
-        st.warning("No data available.")
+        st.info("📤 No data loaded yet. Go to **'Upload & Analyze'** to upload your study files and view them here!")
         return
     
     # Study selector
@@ -441,7 +445,7 @@ def render_cra_dashboard(all_data, all_metrics, canonical_entities, risk_engine)
     st.markdown("---")
     
     if not all_metrics:
-        st.warning("No data available. Please place data files in the /data directory.")
+        st.info("📤 No data loaded yet. Go to **'Upload & Analyze'** to upload your study files and view them here!")
         return
     
     # Study selector
@@ -1074,7 +1078,7 @@ def render_ai_insights_page(all_data, all_metrics, risk_engine):
     st.markdown("*Powered by Google Gemini AI*")
     
     if not all_metrics:
-        st.warning("No data available for AI analysis.")
+        st.info("📤 No data loaded yet. Go to **'Upload & Analyze'** to upload your study files and view them here!")
         return
     
     # Initialize Generative AI
@@ -2014,6 +2018,20 @@ def main():
     
     # Load data
     all_data, all_metrics, canonical_entities, risk_engine = load_and_process_data()
+    
+    # Merge uploaded data if available
+    if all_data is None:
+        all_data = {}
+    if all_metrics is None:
+        all_metrics = {}
+    
+    if 'uploaded_study_name' in st.session_state and st.session_state.uploaded_study_name:
+        all_data[st.session_state.uploaded_study_name] = st.session_state.uploaded_study_df
+        all_metrics[st.session_state.uploaded_study_name] = st.session_state.uploaded_study_metrics
+        
+        # Rebuild risk engine with uploaded data
+        if all_metrics:
+            risk_engine = RiskIntelligence(all_metrics)
     
     # Sidebar navigation
     page = render_sidebar()

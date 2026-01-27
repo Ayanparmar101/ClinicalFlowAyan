@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
+*.pyo
+*.pyd
 *.so
 .Python
 build/
@@ -16,6 +19,7 @@ parts/
 sdist/
 var/
 wheels/
+bin/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -77,3 +81,13 @@ Thumbs.db
 *.zip
 *.tar.gz
 *.rar
+
+# Static analysis
+.mypy_cache/
+.ruff_cache/
+
+# Project specific
+clinical-ops-rt/output.txt
+clinical-ops-rt/data/processed/
+clinical-ops-rt/data/snapshots/
+search_results.txt

@@ -1,0 +1,10 @@
+import time
+print("Waiting 15 seconds for dashboard to load data...")
+time.sleep(15)
+print("Dashboard should be loaded now. Please check Study 6 in the browser.")
+print("Expected: Clean patients should be < 100%, Open queries should be > 0")
+print("\nKey metrics to verify:")
+print("  - Total Subjects: 55")
+print("  - Clean Patients: Should be ~24 (not 55)")
+print("  - Open Queries: Should be ~626 (sum of all queries)")
+print("  - Avg DQI: Should be < 98 (varied scores)")

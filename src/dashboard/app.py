@@ -1,4 +1,4 @@
-"""
+﻿"""
 Main Streamlit Dashboard Application
 Interactive dashboard for the Clinical Trial Intelligence Platform
 """
@@ -409,24 +409,9 @@ def render_ai_insights(study_name, subject_df, study_metrics):
                 st.write(f"- {issue}")
 
 
-def render_sidebar():
-    """Render sidebar navigation"""
-    st.sidebar.title("Navigation")
-    
-    page = st.sidebar.radio("Select View", [
-        "📊 Executive Dashboard",
-        "🔍 Study Analysis",
-        "📈 CRA Dashboard",
-        "⚙️ Settings"
-    ])
-    
-    st.sidebar.markdown("---")
-    st.sidebar.info("""
-    **About**
-    
-    Clinical Trial Intelligence Platform
-    
-    Integrated insight-driven dataflow for clinical trials using Generative and Agentic AI.
+# Old render_sidebar removed - using updated version below
+
+# Integrated insight-driven dataflow for clinical trials using Generative and Agentic AI.
     
     **Features:**
     - Real-time metrics
@@ -1420,6 +1405,9 @@ def render_upload_analyze():
                 try:
                     # Process uploaded files
                     from ingestion.multi_file_loader import MultiFileDataLoader
+                    from harmonization import CanonicalDataModel
+                    from metrics import MetricsEngine, DataQualityIndex
+                    from intelligence import RiskIntelligence
                     import tempfile
                     import os
                     
@@ -1985,7 +1973,7 @@ def render_sidebar():
     st.sidebar.title("Navigation")
     
     page = st.sidebar.radio("Select View", [
-        "� Upload & Analyze",
+        "📤 Upload & Analyze",
         "📊 Executive Dashboard",
         "🔍 Study Analysis",
         "📈 CRA Dashboard",
@@ -2056,3 +2044,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

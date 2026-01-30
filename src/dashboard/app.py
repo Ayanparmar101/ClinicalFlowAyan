@@ -1932,20 +1932,22 @@ def render_uploaded_ask_ai(study_name, study_metrics, study_df):
         if user_question:
             with st.spinner("Thinking..."):
                 # Build context about the study
-                context = f"""Study: {study_name}
-Total Subjects: {len(subject_df)}
-"""
+                context = {
+                    "study_name": study_name,
+                    "total_subjects": len(subject_df)
+                }
+                
                 if not subject_df.empty:
                     if "dqi_score" in subject_df.columns:
-                        context += f"Average DQI: {subject_df['dqi_score'].mean():.1f}\n"
+                        context["average_dqi"] = round(subject_df['dqi_score'].mean(), 1)
                     if "is_clean_patient" in subject_df.columns:
                         clean_pct = (subject_df["is_clean_patient"].sum() / len(subject_df) * 100)
-                        context += f"Clean Data Rate: {clean_pct:.1f}%\n"
+                        context["clean_data_rate_pct"] = round(clean_pct, 1)
                     if "open_queries" in subject_df.columns:
-                        context += f"Total Open Queries: {subject_df['open_queries'].sum()}\n"
+                        context["total_open_queries"] = int(subject_df['open_queries'].sum())
                     if "risk_level" in subject_df.columns:
                         high_risk = (subject_df["risk_level"] == "High").sum()
-                        context += f"High Risk Subjects: {high_risk}\n"
+                        context["high_risk_subjects"] = int(high_risk)
                 
                 answer = gen_ai.answer_natural_language_query(user_question, context)
                 st.success("✅ Answer:")

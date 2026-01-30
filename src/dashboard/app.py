@@ -1323,7 +1323,7 @@ Provide actionable insights on which factors to prioritize."""
             st.markdown(f"- {example}")
 
 
-def render_upload_analyze():
+def render_upload_analyze(active_tab=None):
     """Render upload and analyze page for custom data"""
     st.header("📤 Upload & Analyze Your Data")
     st.markdown("Upload your clinical trial data files and get instant insights powered by AI")

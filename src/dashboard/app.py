@@ -1461,52 +1461,9 @@ def render_upload_analyze():
             
             st.markdown("---")
             
-            # Initialize active tab in session state
-            if 'uploaded_active_tab' not in st.session_state:
-                st.session_state.uploaded_active_tab = "📊 Overview"
-            
-            # Create tab selection buttons
-            tab_options = [
-                "📊 Overview",
-                "🏥 Site Performance", 
-                "📝 Query Management",
-                "⚠️ Action Items",
-                "📋 Executive Summary",
-                "⚠️ Critical Actions",
-                "📊 Study-Level Insights",
-                "🔍 Deep Dive Analysis",
-                "💬 Ask AI"
-            ]
-            
-            # Create two rows of buttons for better layout
-            st.subheader("Analysis Tabs")
-            
-            # First row - Core Analysis (5 buttons)
-            cols1 = st.columns(5)
-            for idx in range(5):
-                with cols1[idx]:
-                    tab_name = tab_options[idx]
-                    is_active = st.session_state.uploaded_active_tab == tab_name
-                    button_type = "primary" if is_active else "secondary"
-                    if st.button(tab_name, key=f"tab_btn_{idx}", use_container_width=True, type=button_type):
-                        st.session_state.uploaded_active_tab = tab_name
-                        st.rerun()
-            
-            # Second row - AI-Powered Insights (4 buttons, centered)
-            cols2 = st.columns([0.5, 1, 1, 1, 1, 0.5])
-            for idx in range(5, 9):
-                with cols2[idx-4]:
-                    tab_name = tab_options[idx]
-                    is_active = st.session_state.uploaded_active_tab == tab_name
-                    button_type = "primary" if is_active else "secondary"
-                    if st.button(tab_name, key=f"tab_btn_{idx}", use_container_width=True, type=button_type):
-                        st.session_state.uploaded_active_tab = tab_name
-                        st.rerun()
-            
-            st.markdown("---")
-            
-            # Display content based on active tab
-            active_tab = st.session_state.uploaded_active_tab
+            # Use tab from sidebar, default to Overview if not set
+            if active_tab is None:
+                active_tab = "📊 Overview"
             
             if active_tab == "📊 Overview":
                 render_uploaded_data_overview(study_name, study_metrics, canonical_entities)
@@ -1986,6 +1943,28 @@ def render_sidebar():
         "⚙️ Settings"
     ])
     
+    # Sub-navigation for Upload & Analyze
+    uploaded_tab = None
+    if page == "📤 Upload & Analyze":
+        if 'uploaded_study_name' in st.session_state and st.session_state.uploaded_study_name:
+            st.sidebar.markdown("---")
+            st.sidebar.subheader("Analysis Tabs")
+            uploaded_tab = st.sidebar.radio(
+                "Choose Analysis:",
+                [
+                    "📊 Overview",
+                    "🏥 Site Performance",
+                    "📝 Query Management",
+                    "⚠️ Action Items",
+                    "📋 Executive Summary",
+                    "⚠️ Critical Actions",
+                    "📊 Study-Level Insights",
+                    "🔍 Deep Dive Analysis",
+                    "💬 Ask AI"
+                ],
+                key="uploaded_analysis_tab"
+            )
+    
     st.sidebar.markdown("---")
     st.sidebar.info("""
     **About**
@@ -2002,7 +1981,7 @@ def render_sidebar():
     - Upload your own data
     """)
     
-    return page
+    return page, uploaded_tab
 
 
 def main():
@@ -2027,7 +2006,7 @@ def main():
             risk_engine = RiskIntelligence(all_metrics)
     
     # Sidebar navigation
-    page = render_sidebar()
+    page, uploaded_tab = render_sidebar()
     
     # Render selected page
     if page == "📊 Executive Dashboard":
@@ -2039,7 +2018,7 @@ def main():
     elif page == "🤖 AI Insights":
         render_ai_insights_page(all_data, all_metrics, risk_engine)
     elif page == "📤 Upload & Analyze":
-        render_upload_analyze()
+        render_upload_analyze(uploaded_tab)
     elif page == "⚙️ Settings":
         st.header("⚙️ Settings")
         st.write("Configuration options:")

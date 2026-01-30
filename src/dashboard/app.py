@@ -1985,11 +1985,11 @@ def render_sidebar():
     st.sidebar.title("Navigation")
     
     page = st.sidebar.radio("Select View", [
+        "� Upload & Analyze",
         "📊 Executive Dashboard",
         "🔍 Study Analysis",
         "📈 CRA Dashboard",
         "🤖 AI Insights",
-        "📤 Upload & Analyze",
         "⚙️ Settings"
     ])
     

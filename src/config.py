@@ -31,9 +31,17 @@ APP_VERSION = os.getenv("APP_VERSION", "1.0.0")
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
 # Gemini API Configuration
-# Always use .env for API key (Streamlit secrets accessed elsewhere if needed)
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+# Try Streamlit secrets first (for hosted deployment), then fall back to .env
+def get_gemini_api_key():
+    """Get Gemini API key from Streamlit secrets or environment"""
+    if HAS_STREAMLIT:
+        try:
+            return st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", ""))
+        except Exception:
+            return os.getenv("GEMINI_API_KEY", "")
+    return os.getenv("GEMINI_API_KEY", "")
 
+GEMINI_API_KEY = get_gemini_api_key()
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemma-3-27b-it")
 AI_TEMPERATURE = float(os.getenv("AI_TEMPERATURE", "0.3"))
 AI_MAX_TOKENS = int(os.getenv("AI_MAX_TOKENS", "2000"))

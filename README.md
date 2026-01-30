@@ -173,6 +173,25 @@ streamlit run src/dashboard/app.py
 
 ---
 
+## 🌐 Streamlit Cloud Deployment
+
+### For Hosted Apps - Enable AI Features
+
+If deploying to Streamlit Cloud, you **must** add secrets for AI features to work:
+
+1. Go to your app settings on Streamlit Cloud
+2. Navigate to **Secrets** section
+3. Add:
+```toml
+GEMINI_API_KEY = "your_api_key_here"
+GEMINI_MODEL = "gemma-3-27b-it"
+```
+4. Save and restart your app
+
+📖 **Detailed deployment guide:** [docs/STREAMLIT_DEPLOYMENT.md](docs/STREAMLIT_DEPLOYMENT.md)
+
+---
+
 ## 💻 Usage
 
 ### 🎯 Method 1: Interactive Dashboard (Recommended)
@@ -349,7 +368,6 @@ Comprehensive documentation for developers and users:
 ---
 
 ## 🧪 Testing
-## 🧪 Testing
 
 ```bash
 # Run all tests
@@ -421,50 +439,10 @@ flake8 src/
 
 ---
 
-## 🔮 Future Roadmap
-
-<table>
-<tr>
-<td width="50%">
-
-**Phase 1: Enhancement** 🚀
-- [ ] Real-time collaboration features
-- [ ] Mobile app (iOS/Android)
-- [ ] Advanced ML models
-- [ ] API marketplace
-
-</td>
-<td width="50%">
-
-**Phase 2: Scale** 🌍
-- [ ] Multi-tenant SaaS platform
-- [ ] Global regulatory compliance
-- [ ] Integration with EDC systems
-- [ ] Blockchain for audit trails
-
-</td>
-</tr>
-</table>
-
----
-
-## 📞 Support & Contact
-
-<div align="center">
-
-**Need Help?** Check our [docs](docs/) or open an [issue](../../issues)
-
 **For Hackathon Judges:** See [DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) for live demo guide
 
 ---
 
-### ⭐ If this project helped you, please star it!
-
-Made with ❤️ for better clinical trials
-
-</div>
-
----
 
 ## 📄 License
 

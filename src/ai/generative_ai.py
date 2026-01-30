@@ -19,6 +19,12 @@ except ImportError:
 
 from config import GEMINI_API_KEY, GEMINI_MODEL, AI_TEMPERATURE, AI_MAX_TOKENS
 
+try:
+    import streamlit as st
+    HAS_STREAMLIT = True
+except ImportError:
+    HAS_STREAMLIT = False
+
 
 class GenerativeAI:
     """
@@ -32,7 +38,16 @@ class GenerativeAI:
         Args:
             api_key: Gemini API key (uses config default if None)
         """
-        self.api_key = api_key or GEMINI_API_KEY
+        # Try multiple sources for API key
+        if api_key:
+            self.api_key = api_key
+        elif HAS_STREAMLIT:
+            try:
+                self.api_key = st.secrets.get("GEMINI_API_KEY", GEMINI_API_KEY)
+            except Exception:
+                self.api_key = GEMINI_API_KEY
+        else:
+            self.api_key = GEMINI_API_KEY
         self.model = GEMINI_MODEL
         self.client = None
         

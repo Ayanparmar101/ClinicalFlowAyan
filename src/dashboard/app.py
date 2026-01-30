@@ -17,7 +17,7 @@ from harmonization import CanonicalDataModel
 from metrics import MetricsEngine, DataQualityIndex
 from intelligence import RiskIntelligence
 from ai import GenerativeAI, CRAAgent, DataQualityAgent, TrialManagerAgent
-from config import DATA_PATH, APP_NAME, APP_VERSION
+from config import DATA_PATH, APP_NAME
 
 # Page configuration
 st.set_page_config(
@@ -109,8 +109,6 @@ def load_and_process_data(_version=5):  # Increment this to bust cache
 def render_header():
     """Render application header"""
     st.markdown(f'<div class="main-header">🔬 {APP_NAME}</div>', unsafe_allow_html=True)
-    st.markdown(f"<center><i>Version {APP_VERSION} - Real-Time Operational Dataflow Metrics</i></center>", 
-                unsafe_allow_html=True)
     st.markdown("---")
 
 

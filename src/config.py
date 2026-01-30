@@ -27,7 +27,7 @@ LOGS_PATH.mkdir(exist_ok=True)
 
 # Application Configuration
 APP_NAME = os.getenv("APP_NAME", "Clinical Trial Intelligence Platform")
-APP_VERSION = os.getenv("APP_VERSION", "1.0.0")
+
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
 # Gemini API Configuration

@@ -16,8 +16,7 @@ from model.state_pipeline import build_full_state
 
 app = FastAPI(
     title="Clinical Ops Real-Time Intelligence",
-    description="Real-time operational readiness for clinical trials",
-    version="1.0.0"
+    description="Real-time operational readiness for clinical trials"
 )
 
 # Load data once (hackathon mode)

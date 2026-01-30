@@ -1,4 +1,4 @@
-﻿"""
+"""
 Main Streamlit Dashboard Application
 Interactive dashboard for the Clinical Trial Intelligence Platform
 """
@@ -407,20 +407,6 @@ def render_ai_insights(study_name, subject_df, study_metrics):
             st.write("**Blocking Issues:**")
             for issue in assessment["blocking_issues"]:
                 st.write(f"- {issue}")
-
-
-# Old render_sidebar removed - using updated version below
-
-# Integrated insight-driven dataflow for clinical trials using Generative and Agentic AI.
-    
-    **Features:**
-    - Real-time metrics
-    - Data Quality Index
-    - Risk detection
-    - AI insights
-    """)
-    
-    return page
 
 
 def render_cra_dashboard(all_data, all_metrics, canonical_entities, risk_engine):

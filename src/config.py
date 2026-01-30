@@ -36,13 +36,26 @@ def get_gemini_api_key():
     """Get Gemini API key from Streamlit secrets or environment"""
     if HAS_STREAMLIT:
         try:
-            return st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", ""))
-        except Exception:
-            return os.getenv("GEMINI_API_KEY", "")
+            # Try to access Streamlit secrets
+            if hasattr(st, 'secrets') and "GEMINI_API_KEY" in st.secrets:
+                return st.secrets["GEMINI_API_KEY"]
+        except Exception as e:
+            pass
+    # Fall back to environment variable
     return os.getenv("GEMINI_API_KEY", "")
 
+def get_gemini_model():
+    """Get Gemini model from Streamlit secrets or environment"""
+    if HAS_STREAMLIT:
+        try:
+            if hasattr(st, 'secrets') and "GEMINI_MODEL" in st.secrets:
+                return st.secrets["GEMINI_MODEL"]
+        except Exception:
+            pass
+    return os.getenv("GEMINI_MODEL", "gemma-3-27b-it")
+
 GEMINI_API_KEY = get_gemini_api_key()
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemma-3-27b-it")
+GEMINI_MODEL = get_gemini_model()
 AI_TEMPERATURE = float(os.getenv("AI_TEMPERATURE", "0.3"))
 AI_MAX_TOKENS = int(os.getenv("AI_MAX_TOKENS", "2000"))
 

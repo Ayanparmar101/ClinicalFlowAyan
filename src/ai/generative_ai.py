@@ -43,7 +43,11 @@ class GenerativeAI:
             self.api_key = api_key
         elif HAS_STREAMLIT:
             try:
-                self.api_key = st.secrets.get("GEMINI_API_KEY", GEMINI_API_KEY)
+                # Try Streamlit secrets first
+                if hasattr(st, 'secrets') and "GEMINI_API_KEY" in st.secrets:
+                    self.api_key = st.secrets["GEMINI_API_KEY"]
+                else:
+                    self.api_key = GEMINI_API_KEY
             except Exception:
                 self.api_key = GEMINI_API_KEY
         else:

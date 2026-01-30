@@ -1478,11 +1478,28 @@ def render_upload_analyze():
                 "💬 Ask AI"
             ]
             
-            # Create columns for tab selection
-            cols = st.columns(len(tab_options))
-            for idx, (col, tab_name) in enumerate(zip(cols, tab_options)):
-                with col:
-                    if st.button(tab_name, key=f"tab_btn_{idx}", width='stretch'):
+            # Create two rows of buttons for better layout
+            st.subheader("Analysis Tabs")
+            
+            # First row - Core Analysis (5 buttons)
+            cols1 = st.columns(5)
+            for idx in range(5):
+                with cols1[idx]:
+                    tab_name = tab_options[idx]
+                    is_active = st.session_state.uploaded_active_tab == tab_name
+                    button_type = "primary" if is_active else "secondary"
+                    if st.button(tab_name, key=f"tab_btn_{idx}", use_container_width=True, type=button_type):
+                        st.session_state.uploaded_active_tab = tab_name
+                        st.rerun()
+            
+            # Second row - AI-Powered Insights (4 buttons, centered)
+            cols2 = st.columns([0.5, 1, 1, 1, 1, 0.5])
+            for idx in range(5, 9):
+                with cols2[idx-4]:
+                    tab_name = tab_options[idx]
+                    is_active = st.session_state.uploaded_active_tab == tab_name
+                    button_type = "primary" if is_active else "secondary"
+                    if st.button(tab_name, key=f"tab_btn_{idx}", use_container_width=True, type=button_type):
                         st.session_state.uploaded_active_tab = tab_name
                         st.rerun()
             

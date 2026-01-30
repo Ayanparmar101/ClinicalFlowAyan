@@ -1,1 +1,0 @@
-# Delta processing logic

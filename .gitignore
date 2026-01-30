@@ -44,6 +44,7 @@ logs/
 
 # Environment variables
 .env
+!.env.example
 
 # Data files (may contain sensitive information)
 data/*/

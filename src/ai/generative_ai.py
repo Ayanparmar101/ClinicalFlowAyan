@@ -11,7 +11,7 @@ import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
 try:
-    from google import genai
+    import google.generativeai as genai
     GEMINI_AVAILABLE = True
 except ImportError:
     GEMINI_AVAILABLE = False
@@ -45,7 +45,8 @@ class GenerativeAI:
             return
         
         try:
-            self.client = genai.Client(api_key=self.api_key)
+            genai.configure(api_key=self.api_key)
+            self.client = genai.GenerativeModel(self.model)
             logger.success(f"✓ Gemini AI initialized successfully with model: {self.model}")
         except Exception as e:
             logger.error(f"Failed to initialize Gemini client: {e}")
@@ -73,10 +74,9 @@ class GenerativeAI:
             if system_message:
                 full_prompt = f"{system_message}\n\n{prompt}"
             
-            response = self.client.models.generate_content(
-                model=self.model,
+            response = self.client.generate_content(
                 contents=full_prompt,
-                config={
+                generation_config={
                     'temperature': AI_TEMPERATURE,
                     'max_output_tokens': AI_MAX_TOKENS,
                 }

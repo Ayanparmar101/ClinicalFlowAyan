@@ -3137,7 +3137,7 @@ fig = px.bar(
     color="Avg DQI",
     color_continuous_scale="RdYlGn"
 )
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width='stretch')
 ```
 
 ## 12.4 CRA Dashboard
@@ -3285,7 +3285,7 @@ if st.button("Analyze Data") and uploaded_files:
        yaxis_range=[0, 100]
    )
    
-   st.plotly_chart(fig, use_container_width=True)
+   st.plotly_chart(fig, width='stretch')
    ```
 
 3. **Risk Heatmap**
@@ -3306,7 +3306,7 @@ if st.button("Analyze Data") and uploaded_files:
        title="Operational Risk Heatmap"
    )
    
-   st.plotly_chart(fig, use_container_width=True)
+   st.plotly_chart(fig, width='stretch')
    ```
 
 4. **Timeline Projection**
@@ -3324,7 +3324,7 @@ if st.button("Analyze Data") and uploaded_files:
            "Status": "On Track" if projected_date <= study.target_db_lock else "At Risk"
        })
    
-   st.dataframe(projections, use_container_width=True)
+   st.dataframe(projections, width='stretch')
    ```
 
 ## 13.2 CRA Dashboard
@@ -3428,7 +3428,7 @@ if st.button("Analyze Data") and uploaded_files:
        for e in site_events[:50]
    ])
    
-   st.dataframe(event_df, use_container_width=True, height=400)
+   st.dataframe(event_df, width='stretch', height=400)
    ```
 
 5. **Monitoring Visit Scheduler**
@@ -3500,7 +3500,7 @@ if st.button("Analyze Data") and uploaded_files:
        for s in all_subjects if s.uncoded_terms > 0
    ])
    
-   st.dataframe(coding_df, use_container_width=True)
+   st.dataframe(coding_df, width='stretch')
    ```
 
 3. **Database Lock Checklist**
@@ -3658,7 +3658,7 @@ if st.button("🚀 Analyze Data", disabled=not uploaded_files or not study_name)
                         for s in subject_states.values()
                     ])
                     
-                    st.dataframe(subject_df, use_container_width=True, height=400)
+                    st.dataframe(subject_df, width='stretch', height=400)
                     
                     # Export options
                     st.subheader("💾 Export Results")
@@ -5434,5 +5434,6 @@ font = "sans serif"
 **License:** See LICENSE file in repository root
 
 **Copyright © 2026 NestTry Team. All rights reserved.**
+
 
 

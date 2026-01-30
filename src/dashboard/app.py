@@ -181,7 +181,7 @@ def render_executive_dashboard(all_metrics, risk_engine):
                      labels={"Avg DQI": "Average DQI Score"},
                      color="Avg DQI",
                      color_continuous_scale="RdYlGn")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
         
         # Data table
         st.dataframe(study_summary_df, use_container_width=True)
@@ -257,7 +257,7 @@ def render_study_metrics(subject_df, study_metrics):
                              title="DQI Score Distribution",
                              labels={"dqi_score": "DQI Score"},
                              nbins=20)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
     
     with col2:
         # Risk level distribution
@@ -266,7 +266,7 @@ def render_study_metrics(subject_df, study_metrics):
             fig = px.pie(values=risk_counts.values, names=risk_counts.index,
                         title="Risk Level Distribution",
                         color_discrete_map={"High": "#d62728", "Medium": "#ff7f0e", "Low": "#2ca02c"})
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
     
     # Completeness metrics
     if all(col in subject_df.columns for col in ["pct_missing_visits", "pct_missing_pages"]):
@@ -280,7 +280,7 @@ def render_study_metrics(subject_df, study_metrics):
             
             fig = px.box(subject_df, y="pct_missing_visits",
                         title="Missing Visits Distribution")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         
         with col2:
             avg_missing_pages = subject_df["pct_missing_pages"].mean()
@@ -288,7 +288,7 @@ def render_study_metrics(subject_df, study_metrics):
             
             fig = px.box(subject_df, y="pct_missing_pages",
                         title="Missing Pages Distribution")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
 
 def render_risk_analysis(subject_df, risk_engine, study_name):
@@ -342,7 +342,7 @@ def render_site_analysis(subject_df, study_metrics):
                         labels={"performance_score": "Performance Score", "site_id": "Site ID"},
                         color="performance_score",
                         color_continuous_scale="RdYlGn")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         
         # Site metrics table
         st.dataframe(site_df, use_container_width=True)
@@ -519,7 +519,7 @@ def render_cra_site_performance(site_df, subject_df, study_data):
                         color="Category",
                         color_discrete_map={"High (≥80)": "#2ca02c", "Medium (60-79)": "#ff7f0e", "Low (<60)": "#d62728"},
                         title="Site Performance Categories")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
     
     with col2:
         st.write("**Top 5 Performing Sites**")
@@ -565,7 +565,7 @@ def render_cra_site_performance(site_df, subject_df, study_data):
             showlegend=False
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     # Site details table
     st.write("**Complete Site Metrics**")
@@ -577,7 +577,7 @@ def render_cra_site_performance(site_df, subject_df, study_data):
     styled_site_df = site_df[display_cols].copy()
     st.dataframe(
         styled_site_df,
-        use_container_width=True,
+        width='stretch',
         hide_index=True,
         column_config={
             "performance_score": st.column_config.ProgressColumn(
@@ -632,7 +632,7 @@ def render_cra_query_management(subject_df, site_df):
                 labels={"x": "Site ID", "y": "Total Open Queries"},
                 title="Query Burden Distribution"
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
     
     with col2:
         st.write("**Query Hotspots (Sites with High Query Load)**")
@@ -663,7 +663,7 @@ def render_cra_query_management(subject_df, site_df):
         
         st.dataframe(
             high_query_subjects_sorted,
-            use_container_width=True,
+            width='stretch',
             hide_index=True
         )
         
@@ -722,7 +722,7 @@ def render_cra_visit_compliance(subject_df, site_df):
                     title="Top 15 Sites by Missing Visits",
                     labels={"total_missing_visits": "Missing Visits", "site_id": "Site ID"}
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
             else:
                 st.success("✅ No missing visits across all sites")
     
@@ -736,7 +736,7 @@ def render_cra_visit_compliance(subject_df, site_df):
             labels={"x": "Number of Missing Visits", "y": "Subject Count"},
             title="Distribution of Missing Visits per Subject"
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     # Data completeness by site
     st.write("**Data Completeness Overview by Site**")
@@ -746,7 +746,7 @@ def render_cra_visit_compliance(subject_df, site_df):
         
         st.dataframe(
             completeness_df,
-            use_container_width=True,
+            width='stretch',
             hide_index=True,
             column_config={
                 "total_missing_visits": st.column_config.NumberColumn(
@@ -776,7 +776,7 @@ def render_cra_visit_compliance(subject_df, site_df):
         
         st.dataframe(
             critical_subjects_sorted,
-            use_container_width=True,
+            width='stretch',
             hide_index=True
         )
     else:
@@ -812,7 +812,7 @@ def render_cra_action_items(subject_df, site_df, study_metrics, risk_engine, stu
         
         st.dataframe(
             priority_sites[display_cols],
-            use_container_width=True,
+            width='stretch',
             hide_index=True,
             column_config={
                 "urgency_score": st.column_config.NumberColumn(
@@ -890,7 +890,7 @@ def render_cra_action_items(subject_df, site_df, study_metrics, risk_engine, stu
             
             st.dataframe(
                 high_risk_sorted,
-                use_container_width=True,
+                width='stretch',
                 hide_index=True
             )
             
@@ -971,7 +971,7 @@ def render_cra_analytics(subject_df, site_df, study_metrics):
                 title="Site Performance vs Query Burden",
                 labels={"total_open_queries": "Total Open Queries", "performance_score": "Performance Score"}
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
     
     with col2:
         st.write("**Missing Visits vs. Performance**")
@@ -985,7 +985,7 @@ def render_cra_analytics(subject_df, site_df, study_metrics):
                 title="Site Performance vs Missing Visits",
                 labels={"total_missing_visits": "Total Missing Visits", "performance_score": "Performance Score"}
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
     
     # Subject count distribution
     st.write("### 📊 Site Enrollment Distribution")
@@ -998,7 +998,7 @@ def render_cra_analytics(subject_df, site_df, study_metrics):
             labels={"subject_count": "Number of Subjects"},
             nbins=15
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     # Performance trends
     st.write("### 📉 Performance Metrics Summary")
@@ -1016,7 +1016,7 @@ def render_cra_analytics(subject_df, site_df, study_metrics):
         }
         
         perf_stats_df = pd.DataFrame(perf_stats)
-        st.dataframe(perf_stats_df, use_container_width=True, hide_index=True)
+        st.dataframe(perf_stats_df, width='stretch', hide_index=True)
     
     # Site ranking
     st.write("### 🏆 Site Performance Ranking")
@@ -1031,7 +1031,7 @@ def render_cra_analytics(subject_df, site_df, study_metrics):
         
         st.dataframe(
             ranked_sites[display_cols],
-            use_container_width=True,
+            width='stretch',
             column_config={
                 "performance_score": st.column_config.ProgressColumn(
                     "Performance",
@@ -1482,7 +1482,7 @@ def render_upload_analyze():
             cols = st.columns(len(tab_options))
             for idx, (col, tab_name) in enumerate(zip(cols, tab_options)):
                 with col:
-                    if st.button(tab_name, key=f"tab_btn_{idx}", use_container_width=True):
+                    if st.button(tab_name, key=f"tab_btn_{idx}", width='stretch'):
                         st.session_state.uploaded_active_tab = tab_name
                         st.rerun()
             
@@ -1619,7 +1619,7 @@ def render_uploaded_data_overview(study_name, study_metrics, canonical_entities)
                 ]
             }
             
-            st.dataframe(pd.DataFrame(metrics_data), hide_index=True, use_container_width=True)
+            st.dataframe(pd.DataFrame(metrics_data), hide_index=True, width='stretch')
         
         with col2:
             st.write("### ⚠️ Risk Distribution")
@@ -1633,7 +1633,7 @@ def render_uploaded_data_overview(study_name, study_metrics, canonical_entities)
                     title="Subject Risk Levels",
                     color_discrete_map={"High": "#d62728", "Medium": "#ff7f0e", "Low": "#2ca02c"}
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
             else:
                 st.info("Risk assessment not available")
         
@@ -1650,7 +1650,7 @@ def render_uploaded_data_overview(study_name, study_metrics, canonical_entities)
                 color_discrete_sequence=["#1f77b4"]
             )
             fig.add_vline(x=avg_dqi, line_dash="dash", line_color="red", annotation_text=f"Mean: {avg_dqi:.1f}")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         
         # Export option
         st.markdown("---")
@@ -1746,7 +1746,7 @@ def render_uploaded_critical_actions(study_name, all_metrics):
             st.write("### Top High-Risk Subjects")
             display_cols = ["subject_id", "site_id", "dqi_score", "open_queries", "missing_visits", "missing_pages"]
             available_cols = [col for col in display_cols if col in high_risk.columns]
-            st.dataframe(high_risk[available_cols].head(10), use_container_width=True)
+            st.dataframe(high_risk[available_cols].head(10), width='stretch')
             
             if st.button("Generate Action Plan", key="upload_action_plan"):
                 with st.spinner("Generating prioritized action plan with Gemini AI..."):
@@ -2030,4 +2030,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

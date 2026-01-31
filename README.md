@@ -4,7 +4,7 @@
 
 ### *Transforming Clinical Trial Operations with AI-Powered Insights*
 
-**🌐 [Live Demo - Try it Now!](https://clinicalflowayan.streamlit.app/)**
+**🌐 [Live Demo - Try it Now!](https://clinicalflowayan.streamlit.app/)** | **🎥 [Watch Demo Video](https://youtu.be/294oaSUrROM)**
 
 [![Python 3.10](https://img.shields.io/badge/python-3.10%20(recommended)-blue.svg)](https://www.python.org/downloads/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.31+-FF4B4B.svg)](https://streamlit.io)

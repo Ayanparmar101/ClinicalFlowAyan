@@ -102,42 +102,56 @@ streamlit run src/dashboard/app.py
 ### 📊 Executive Dashboard
 *Real-time portfolio overview with key metrics*
 
-![Executive Dashboard](docs/screenshots/executive-dashboard.png)
+![Executive Dashboard](docs/screenshots/Exec_dashboard.jpeg)
 
 ---
 
-### 🔍 Study Analysis
-*Deep-dive into study performance with Data Quality Index*
+### 📈 Key Metrics
+*Comprehensive study performance metrics*
 
-![Study Analysis](docs/screenshots/study-analysis.png)
-
----
-
-### ⚠️ Risk Analysis
-*AI-powered risk detection and subject-level insights*
-
-![Risk Analysis](docs/screenshots/risk-analysis.png)
+![Key Metrics](docs/screenshots/key_metrics.jpeg)
 
 ---
 
-### 🤖 AI Insights
-*Generative AI summarizes complex data into actionable insights*
+### 🔍 Performance Correlation
+*Cross-study performance analysis and trends*
 
-![AI Insights](docs/screenshots/ai-insights.png)
+![Performance Correlation](docs/screenshots/performance_correlation.jpeg)
 
 ---
 
 ### 📍 Site Performance
 *Site-level metrics and comparative analysis*
 
-![Site Performance](docs/screenshots/site-performance.png)
+![Site Performance](docs/screenshots/Site_performance.jpeg)
 
 ---
 
-### 📤 Upload & Analyze
-*Drag-and-drop interface for instant analysis*
+### 📅 Visit Compliance
+*Visit tracking and compliance monitoring*
 
-![Upload Interface](docs/screenshots/upload-interface.png)
+![Visit Compliance](docs/screenshots/Visit_compilance.jpeg)
+
+---
+
+### 🤖 AI Insights
+*Generative AI summarizes complex data into actionable insights*
+
+![AI Insights](docs/screenshots/AI_insights.jpeg)
+
+---
+
+### 💡 Action Recommendations
+*AI-powered recommendations for trial optimization*
+
+![Action Recommendations](docs/screenshots/Action_recommendation.jpeg)
+
+---
+
+### 📋 Query Management
+*Query tracking and resolution workflow*
+
+![Query Management](docs/screenshots/Query%20Managemnet.jpeg)
 
 </div>
 

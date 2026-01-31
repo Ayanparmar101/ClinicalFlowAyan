@@ -48,40 +48,53 @@ st.markdown("""
         padding: 2rem 2rem 3rem;
     }
     
-    /* Sidebar - clean blue */
+    /* Sidebar - clean white */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #2c5282 0%, #2b6cb0 100%);
+        background: #ffffff;
         padding-top: 2rem;
-    }
-    
-    [data-testid="stSidebar"] * {
-        color: #ffffff !important;
+        border-right: 1px solid #e2e8f0;
     }
     
     [data-testid="stSidebar"] .stRadio > label {
         font-weight: 600;
         font-size: 1rem;
         margin-bottom: 1rem;
+        color: #1a202c !important;
     }
     
     /* Sidebar radio buttons */
     [data-testid="stSidebar"] [role="radiogroup"] label {
-        background: rgba(255, 255, 255, 0.1);
+        background: #f7fafc;
         padding: 0.8rem 1rem;
         border-radius: 8px;
         margin-bottom: 0.5rem;
         transition: all 0.2s ease;
         cursor: pointer;
+        color: #4a5568 !important;
+        border: 1px solid #e2e8f0;
     }
     
     [data-testid="stSidebar"] [role="radiogroup"] label:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: #edf2f7;
+        border-color: #cbd5e0;
     }
     
     [data-testid="stSidebar"] [role="radiogroup"] label[data-checked="true"] {
-        background: rgba(255, 255, 255, 0.25);
+        background: #2563eb;
+        color: white !important;
         font-weight: 600;
-        border-left: 3px solid #fbbf24;
+        border-color: #2563eb;
+    }
+    
+    /* Sidebar text and info box */
+    [data-testid="stSidebar"] .stMarkdown {
+        color: #4a5568 !important;
+    }
+    
+    [data-testid="stSidebar"] h1, 
+    [data-testid="stSidebar"] h2, 
+    [data-testid="stSidebar"] h3 {
+        color: #1a202c !important;
     }
     
     /* Header */

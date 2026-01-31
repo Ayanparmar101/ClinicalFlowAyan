@@ -99,7 +99,7 @@ An **AI-powered intelligence platform** that:
 ### � Data Processing Pipeline
 *End-to-end data flow from ingestion to insights*
 
-![Data Pipeline](docs/screenshots/Pipeline.jpeg)
+![Data Pipeline](docs/screenshots/PipeLine.png)
 
 ---
 

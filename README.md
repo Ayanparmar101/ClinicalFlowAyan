@@ -4,6 +4,8 @@
 
 ### *Transforming Clinical Trial Operations with AI-Powered Insights*
 
+**🌐 [Live Demo - Try it Now!](https://clinicalflowayan.streamlit.app/)**
+
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.31+-FF4B4B.svg)](https://streamlit.io)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-AI-4285F4.svg)](https://ai.google.dev/)

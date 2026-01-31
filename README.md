@@ -6,7 +6,7 @@
 
 **🌐 [Live Demo - Try it Now!](https://clinicalflowayan.streamlit.app/)**
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10](https://img.shields.io/badge/python-3.10%20(recommended)-blue.svg)](https://www.python.org/downloads/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.31+-FF4B4B.svg)](https://streamlit.io)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-AI-4285F4.svg)](https://ai.google.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -199,8 +199,10 @@ An **AI-powered intelligence platform** that:
 
 ### Prerequisites
 ```bash
-Python 3.9+  |  pip  |  Virtual Environment (recommended)
+Python 3.10 (Recommended)  |  pip  |  Virtual Environment (recommended)
 ```
+
+> **⚠️ Important:** Python 3.10 is the recommended version. The project is compatible with Python 3.9-3.11 but **NOT compatible** with Python 3.12+ due to dependency issues.
 
 ### ⚡ Installation (2 minutes)
 

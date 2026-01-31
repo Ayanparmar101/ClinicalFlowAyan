@@ -27,52 +27,243 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Custom CSS for modern, polished look
 st.markdown("""
 <style>
-    .main-header {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: #1f77b4;
-        text-align: center;
-        padding: 1rem 0;
-    }
-    .metric-card {
-        background-color: #f0f2f6;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        border-left: 4px solid #1f77b4;
-    }
-    .risk-high {
-        color: #d62728;
-        font-weight: bold;
-    }
-    .risk-medium {
-        color: #ff7f0e;
-        font-weight: bold;
-    }
-    .risk-low {
-        color: #2ca02c;
-        font-weight: bold;
+    /* Import modern font */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    /* Global font and background */
+    html, body, [class*="css"] {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
-    /* Hide top right menu and icons */
+    /* Main content area with gradient background */
+    .stApp {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .main .block-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem 3rem;
+        margin: 1rem auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    [data-testid="stSidebar"] * {
+        color: #ffffff !important;
+    }
+    
+    [data-testid="stSidebar"] .stRadio > label {
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+    
+    /* Sidebar radio buttons */
+    [data-testid="stSidebar"] [role="radiogroup"] label {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    [data-testid="stSidebar"] [role="radiogroup"] label:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    [data-testid="stSidebar"] [role="radiogroup"] label[data-checked="true"] {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-weight: 600;
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    /* Header styling with gradient */
+    .main-header {
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        padding: 1.5rem 0;
+        margin-bottom: 2rem;
+        letter-spacing: -1px;
+    }
+    
+    /* Enhanced metric cards */
+    [data-testid="stMetric"] {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        transition: transform 0.3s ease;
+    }
+    
+    [data-testid="stMetric"]:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+    }
+    
+    [data-testid="stMetric"] label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #5a67d8 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    [data-testid="stMetric"] [data-testid="stMetricValue"] {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2d3748 !important;
+    }
+    
+    /* Risk level styling */
+    .risk-high {
+        color: #e53e3e;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(229, 62, 62, 0.2);
+    }
+    .risk-medium {
+        color: #ed8936;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(237, 137, 54, 0.2);
+    }
+    .risk-low {
+        color: #38a169;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(56, 161, 105, 0.2);
+    }
+    
+    /* Enhanced buttons */
+    .stButton > button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+    }
+    
+    /* Enhanced expanders */
+    [data-testid="stExpander"] {
+        background: white;
+        border-radius: 12px;
+        border: 2px solid #e2e8f0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1rem;
+    }
+    
+    [data-testid="stExpander"] [data-testid="stExpanderHeader"] {
+        font-weight: 600;
+        color: #2d3748;
+    }
+    
+    /* Info boxes */
+    .stAlert {
+        border-radius: 12px;
+        border-left: 4px solid;
+        padding: 1rem 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    /* Dataframe styling */
+    [data-testid="stDataFrame"] {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    /* Tabs styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+        background: #f7fafc;
+        padding: 0.5rem;
+        border-radius: 12px;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    /* File uploader */
+    [data-testid="stFileUploader"] {
+        background: white;
+        border: 2px dashed #cbd5e0;
+        border-radius: 12px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    [data-testid="stFileUploader"]:hover {
+        border-color: #667eea;
+        background: #f7fafc;
+    }
+    
+    /* Hide Streamlit branding */
     header[data-testid="stHeader"] {
         display: none;
     }
     
-    /* Hide bottom right icons */
     .stActionButton {
         display: none !important;
     }
     
-    /* Alternative selectors for bottom right elements */
     div[data-testid="stStatusWidget"] {
         display: none !important;
     }
     
     button[kind="header"] {
         display: none !important;
+    }
+    
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    /* Subheaders */
+    h2, h3 {
+        color: #2d3748;
+        font-weight: 700;
+        margin-top: 2rem;
+    }
+    
+    /* Horizontal rules */
+    hr {
+        border: none;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+        margin: 2rem 0;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -128,6 +319,7 @@ def load_and_process_data(_version=5):  # Increment this to bust cache
 def render_header():
     """Render application header"""
     st.markdown(f'<div class="main-header">🔬 {APP_NAME}</div>', unsafe_allow_html=True)
+    st.markdown('<p style="text-align: center; color: #718096; font-size: 1.1rem; margin-top: -1rem; margin-bottom: 2rem;">Integrated insight-driven dataflow for clinical trials using Generative AI</p>', unsafe_allow_html=True)
     st.markdown("---")
 
 

@@ -14,15 +14,6 @@ Your Streamlit Cloud app **requires** API secrets to enable AI features. Without
 4. Click the **"⚙️ Settings"** menu (three dots in top right)
 5. Select **"Secrets"**
 
-### 2. Add Your Secrets
-
-Copy and paste this **EXACT format** into the secrets editor:
-
-```toml
-GEMINI_API_KEY = "AIzaSyBIM4Cm0fJZefnAduktRPg7KDAsfQSbyjQ"
-GEMINI_MODEL = "gemma-3-27b-it"
-```
-
 **Critical Notes:**
 - ✅ Use **double quotes** around values
 - ✅ Use **equals sign with spaces**: ` = `
@@ -30,13 +21,13 @@ GEMINI_MODEL = "gemma-3-27b-it"
 - ❌ Do NOT use `.get()` or dictionary access in secrets
 - ❌ Do NOT add extra spaces or formatting
 
-### 3. Save and Restart
+### 2. Save and Restart
 
 1. Click **"Save"** at the bottom of the secrets editor
 2. Your app will automatically restart
 3. Wait 30-60 seconds for the restart to complete
 
-### 4. Verify AI is Working
+### 3. Verify AI is Working
 
 After restart:
 
@@ -95,22 +86,6 @@ On Streamlit Cloud:
 - The app checks `st.secrets` first
 - If not found, it falls back to environment variables (which are empty on Cloud)
 - `.env` files are NOT deployed to Streamlit Cloud
-
-## 🧪 Local Development
-
-For local testing, you can use either:
-
-**Option 1: `.env` file** (already set up)
-```bash
-GEMINI_API_KEY=AIzaSyBIM4Cm0fJZefnAduktRPg7KDAsfQSbyjQ
-GEMINI_MODEL=gemma-3-27b-it
-```
-
-**Option 2: `.streamlit/secrets.toml`** (recommended for local)
-```toml
-GEMINI_API_KEY = "AIzaSyBIM4Cm0fJZefnAduktRPg7KDAsfQSbyjQ"
-GEMINI_MODEL = "gemma-3-27b-it"
-```
 
 ## 📝 Verification Checklist
 

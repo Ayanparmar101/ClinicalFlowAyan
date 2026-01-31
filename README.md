@@ -202,8 +202,8 @@ Python 3.9+  |  pip  |  Virtual Environment (recommended)
 
 **1️⃣ Clone the repository**
 ```bash
-git clone <repository-url>
-cd NestTry
+git clone https://github.com/Ayanparmar101/ClinicalFlowAyan
+cd ClinicalFlowAyan
 ```
 
 **2️⃣ Create virtual environment**

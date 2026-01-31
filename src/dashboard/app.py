@@ -228,17 +228,24 @@ st.markdown("""
         border-radius: 6px !important;
     }
     
-    /* Hide Streamlit branding */
-    header[data-testid="stHeader"] {
-        display: none;
+    /* Hide Streamlit branding but keep sidebar toggle */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    /* Keep sidebar collapse button visible */
+    [data-testid="collapsedControl"] {
+        display: block !important;
+        color: #2563eb !important;
     }
     
-    .stActionButton, div[data-testid="stStatusWidget"], button[kind="header"] {
+    button[kind="header"] {
         display: none !important;
     }
     
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
+    /* Hide status widget but not sidebar controls */
+    div[data-testid="stStatusWidget"] {
+        display: none !important;
+    }
     
     /* Headers */
     h1, h2, h3 {

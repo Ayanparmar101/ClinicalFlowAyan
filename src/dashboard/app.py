@@ -2246,8 +2246,7 @@ def render_sidebar():
         "📊 Executive Dashboard",
         "🔍 Study Analysis",
         "📈 CRA Dashboard",
-        "🤖 AI Insights",
-        "⚙️ Settings"
+        "🤖 AI Insights"
     ])
     
     # No sub-navigation needed - all features are in main navigation
@@ -2307,42 +2306,6 @@ def main():
         render_ai_insights_page(all_data, all_metrics, risk_engine)
     elif page == "📤 Upload & Analyze":
         render_upload_analyze()
-    elif page == "⚙️ Settings":
-        st.header("⚙️ Settings")
-        
-        # Theme toggle
-        st.subheader("🎨 Appearance")
-        
-        # Initialize theme in session state
-        if 'theme' not in st.session_state:
-            st.session_state.theme = 'light'
-        
-        col1, col2 = st.columns([1, 3])
-        with col1:
-            theme = st.radio(
-                "Theme",
-                ["Light", "Dark"],
-                index=0 if st.session_state.theme == 'light' else 1,
-                horizontal=True
-            )
-            
-            if theme == "Dark":
-                st.session_state.theme = 'dark'
-            else:
-                st.session_state.theme = 'light'
-        
-        with col2:
-            if st.session_state.theme == 'dark':
-                st.info("🌙 Dark mode enabled - Reload the page to apply changes")
-            else:
-                st.info("☀️ Light mode enabled")
-        
-        st.markdown("---")
-        
-        # Other settings
-        st.subheader("📁 Data Configuration")
-        st.text_input("Data Directory", str(DATA_PATH), disabled=True)
-        st.info("API keys and other settings are configured in the .env file.")
 
 
 if __name__ == "__main__":

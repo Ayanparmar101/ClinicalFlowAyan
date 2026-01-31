@@ -27,35 +27,31 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for modern, polished look
+# Custom CSS - Clean and Usable
 st.markdown("""
 <style>
     /* Import modern font */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
-    /* Global font and background */
+    /* Global font */
     html, body, [class*="css"] {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
-    /* Main content area with gradient background */
+    /* Clean white background */
     .stApp {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-color: #f8f9fa;
     }
     
     .main .block-container {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 2rem 3rem;
-        margin: 1rem auto;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        max-width: 1400px;
+        padding: 2rem 2rem 3rem;
     }
     
-    /* Sidebar styling */
+    /* Sidebar - clean blue */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
-        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(180deg, #2c5282 0%, #2b6cb0 100%);
+        padding-top: 2rem;
     }
     
     [data-testid="stSidebar"] * {
@@ -63,65 +59,53 @@ st.markdown("""
     }
     
     [data-testid="stSidebar"] .stRadio > label {
-        font-weight: 500;
-        font-size: 0.95rem;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 1rem;
     }
     
     /* Sidebar radio buttons */
     [data-testid="stSidebar"] [role="radiogroup"] label {
         background: rgba(255, 255, 255, 0.1);
-        padding: 0.75rem 1rem;
-        border-radius: 10px;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
         margin-bottom: 0.5rem;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.2s ease;
+        cursor: pointer;
     }
     
     [data-testid="stSidebar"] [role="radiogroup"] label:hover {
         background: rgba(255, 255, 255, 0.2);
-        transform: translateX(5px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
     
     [data-testid="stSidebar"] [role="radiogroup"] label[data-checked="true"] {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: rgba(255, 255, 255, 0.25);
         font-weight: 600;
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        border-left: 3px solid #fbbf24;
     }
     
-    /* Header styling with gradient */
+    /* Header */
     .main-header {
-        font-size: 3rem;
+        font-size: 2.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #1a365d;
         text-align: center;
-        padding: 1.5rem 0;
-        margin-bottom: 2rem;
-        letter-spacing: -1px;
+        padding: 1rem 0 0.5rem;
     }
     
-    /* Enhanced metric cards */
+    /* Metric cards - clean design */
     [data-testid="stMetric"] {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: white;
         padding: 1.5rem;
-        border-radius: 15px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        transition: transform 0.3s ease;
-    }
-    
-    [data-testid="stMetric"]:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
     
     [data-testid="stMetric"] label {
-        font-size: 0.9rem;
+        font-size: 0.875rem;
         font-weight: 600;
-        color: #5a67d8 !important;
+        color: #4a5568 !important;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
@@ -129,106 +113,106 @@ st.markdown("""
     [data-testid="stMetric"] [data-testid="stMetricValue"] {
         font-size: 2rem;
         font-weight: 700;
-        color: #2d3748 !important;
+        color: #1a202c !important;
     }
     
-    /* Risk level styling */
+    /* Risk levels */
     .risk-high {
-        color: #e53e3e;
+        color: #dc2626;
         font-weight: 700;
-        text-shadow: 0 2px 4px rgba(229, 62, 62, 0.2);
     }
     .risk-medium {
-        color: #ed8936;
+        color: #f59e0b;
         font-weight: 700;
-        text-shadow: 0 2px 4px rgba(237, 137, 54, 0.2);
     }
     .risk-low {
-        color: #38a169;
+        color: #059669;
         font-weight: 700;
-        text-shadow: 0 2px 4px rgba(56, 161, 105, 0.2);
     }
     
-    /* Enhanced buttons */
+    /* Buttons - clean primary style */
     .stButton > button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #2563eb;
         color: white;
         border: none;
-        border-radius: 10px;
-        padding: 0.75rem 2rem;
+        border-radius: 6px;
+        padding: 0.6rem 1.5rem;
         font-weight: 600;
-        font-size: 1rem;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        transition: background 0.2s ease;
     }
     
     .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+        background: #1d4ed8;
     }
     
-    /* Enhanced expanders */
+    .stButton > button:active {
+        background: #1e40af;
+    }
+    
+    /* Expanders */
     [data-testid="stExpander"] {
         background: white;
-        border-radius: 12px;
-        border: 2px solid #e2e8f0;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
         margin-bottom: 1rem;
-    }
-    
-    [data-testid="stExpander"] [data-testid="stExpanderHeader"] {
-        font-weight: 600;
-        color: #2d3748;
     }
     
     /* Info boxes */
     .stAlert {
-        border-radius: 12px;
+        border-radius: 8px;
         border-left: 4px solid;
-        padding: 1rem 1.5rem;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
     
-    /* Dataframe styling */
+    /* Dataframes */
     [data-testid="stDataFrame"] {
-        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
     
-    /* Tabs styling */
+    /* Tabs - clean design with good contrast */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background: #f7fafc;
-        padding: 0.5rem;
-        border-radius: 12px;
+        gap: 4px;
+        background: white;
+        padding: 0.25rem;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
     }
     
     .stTabs [data-baseweb="tab"] {
-        border-radius: 8px;
-        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        padding: 0.6rem 1.2rem;
         font-weight: 600;
-        transition: all 0.3s ease;
+        color: #4a5568;
+        background: transparent;
+    }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        background: #f7fafc;
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #2563eb !important;
         color: white !important;
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
     
     /* File uploader */
     [data-testid="stFileUploader"] {
         background: white;
         border: 2px dashed #cbd5e0;
-        border-radius: 12px;
+        border-radius: 8px;
         padding: 2rem;
-        transition: all 0.3s ease;
     }
     
     [data-testid="stFileUploader"]:hover {
-        border-color: #667eea;
+        border-color: #2563eb;
         background: #f7fafc;
+    }
+    
+    /* Text inputs and selects */
+    input, select, textarea {
+        border-radius: 6px !important;
     }
     
     /* Hide Streamlit branding */
@@ -236,34 +220,30 @@ st.markdown("""
         display: none;
     }
     
-    .stActionButton {
-        display: none !important;
-    }
-    
-    div[data-testid="stStatusWidget"] {
-        display: none !important;
-    }
-    
-    button[kind="header"] {
+    .stActionButton, div[data-testid="stStatusWidget"], button[kind="header"] {
         display: none !important;
     }
     
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Subheaders */
-    h2, h3 {
-        color: #2d3748;
+    /* Headers */
+    h1, h2, h3 {
+        color: #1a202c;
         font-weight: 700;
-        margin-top: 2rem;
     }
     
     /* Horizontal rules */
     hr {
         border: none;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
-        margin: 2rem 0;
+        height: 1px;
+        background: #e2e8f0;
+        margin: 1.5rem 0;
+    }
+    
+    /* Improve selectbox and input visibility */
+    [data-baseweb="select"], [data-baseweb="input"] {
+        background: white !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -319,7 +299,7 @@ def load_and_process_data(_version=5):  # Increment this to bust cache
 def render_header():
     """Render application header"""
     st.markdown(f'<div class="main-header">🔬 {APP_NAME}</div>', unsafe_allow_html=True)
-    st.markdown('<p style="text-align: center; color: #718096; font-size: 1.1rem; margin-top: -1rem; margin-bottom: 2rem;">Integrated insight-driven dataflow for clinical trials using Generative AI</p>', unsafe_allow_html=True)
+    st.markdown('<p style="text-align: center; color: #64748b; font-size: 1rem; margin-top: -0.5rem; margin-bottom: 1.5rem;">Integrated insight-driven dataflow for clinical trials using Generative AI</p>', unsafe_allow_html=True)
     st.markdown("---")
 
 

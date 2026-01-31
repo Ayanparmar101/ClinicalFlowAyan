@@ -232,6 +232,11 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
+    /* Remove top header bar completely */
+    header[data-testid="stHeader"] {
+        display: none !important;
+    }
+    
     /* Keep sidebar collapse button visible */
     [data-testid="collapsedControl"] {
         display: block !important;
@@ -245,6 +250,15 @@ st.markdown("""
     /* Hide status widget but not sidebar controls */
     div[data-testid="stStatusWidget"] {
         display: none !important;
+    }
+    
+    /* Remove top padding from main app */
+    .stApp > header {
+        display: none !important;
+    }
+    
+    .main .block-container {
+        padding-top: 1rem !important;
     }
     
     /* Headers */

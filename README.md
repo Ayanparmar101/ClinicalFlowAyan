@@ -95,6 +95,54 @@ streamlit run src/dashboard/app.py
 
 ---
 
+## 📸 Screenshots
+
+<div align="center">
+
+### 📊 Executive Dashboard
+*Real-time portfolio overview with key metrics*
+
+![Executive Dashboard](docs/screenshots/executive-dashboard.png)
+
+---
+
+### 🔍 Study Analysis
+*Deep-dive into study performance with Data Quality Index*
+
+![Study Analysis](docs/screenshots/study-analysis.png)
+
+---
+
+### ⚠️ Risk Analysis
+*AI-powered risk detection and subject-level insights*
+
+![Risk Analysis](docs/screenshots/risk-analysis.png)
+
+---
+
+### 🤖 AI Insights
+*Generative AI summarizes complex data into actionable insights*
+
+![AI Insights](docs/screenshots/ai-insights.png)
+
+---
+
+### 📍 Site Performance
+*Site-level metrics and comparative analysis*
+
+![Site Performance](docs/screenshots/site-performance.png)
+
+---
+
+### 📤 Upload & Analyze
+*Drag-and-drop interface for instant analysis*
+
+![Upload Interface](docs/screenshots/upload-interface.png)
+
+</div>
+
+---
+
 ## 🏗️ Architecture
 
 ```

@@ -581,7 +581,9 @@ def render_site_analysis(subject_df, study_metrics):
 def render_ai_insights(study_name, subject_df, study_metrics):
     """Render AI-generated insights"""
     st.subheader("🤖 AI-Powered Insights")
-    
+        # Create directories
+    New-Item -ItemType Directory -Force -Path "docs/screenshots"
+    New-Item -ItemType Directory -Force -Path "docs/diagrams"
     # Generate summary metrics for AI
     summary = {
         "total_subjects": len(subject_df),

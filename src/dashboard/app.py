@@ -1340,10 +1340,17 @@ Provide actionable insights on which factors to prioritize."""
             st.markdown(f"- {example}")
 
 
-def render_upload_analyze(active_tab=None):
+def render_upload_analyze():
     """Render upload and analyze page for custom data"""
     st.header("📤 Upload & Analyze Your Data")
     st.markdown("Upload your clinical trial data files and get instant insights powered by AI")
+    st.markdown("""        
+    After uploading and analyzing your data:
+    - View executive summaries in **📊 Executive Dashboard**
+    - Dive deep into study details in **🔍 Study Analysis**
+    - Monitor sites and operations in **📈 CRA Dashboard**
+    - Get AI-powered insights in **🤖 AI Insights**
+    """)
     st.markdown("---")
     
     # Instructions
@@ -1478,59 +1485,19 @@ def render_upload_analyze(active_tab=None):
             
             st.markdown("---")
             
-            # Use tab from sidebar, default to Overview if not set
-            if active_tab is None:
-                active_tab = "📊 Overview"
+            # Show comprehensive overview
+            render_uploaded_data_overview(study_name, study_metrics, canonical_entities)
             
-            if active_tab == "📊 Overview":
-                render_uploaded_data_overview(study_name, study_metrics, canonical_entities)
+            # Guide users to other views
+            st.info("""
+            ✨ **Your data has been successfully analyzed and integrated!**
             
-            elif active_tab == "🏥 Site Performance":
-                if "site_metrics" in study_metrics and "subject_metrics" in study_metrics:
-                    render_cra_site_performance(
-                        study_metrics["site_metrics"],
-                        study_metrics["subject_metrics"],
-                        study_df
-                    )
-                else:
-                    st.info("Site metrics not available")
-            
-            elif active_tab == "📝 Query Management":
-                if "subject_metrics" in study_metrics and "site_metrics" in study_metrics:
-                    render_cra_query_management(
-                        study_metrics["subject_metrics"],
-                        study_metrics["site_metrics"]
-                    )
-                else:
-                    st.info("Query metrics not available")
-            
-            elif active_tab == "⚠️ Action Items":
-                if "subject_metrics" in study_metrics and "site_metrics" in study_metrics:
-                    render_cra_action_items(
-                        study_metrics["subject_metrics"],
-                        study_metrics["site_metrics"],
-                        study_metrics,
-                        risk_engine,
-                        study_name
-                    )
-                else:
-                    st.info("Action items not available")
-            
-            # AI-Powered Insights Tabs
-            elif active_tab == "📋 Executive Summary":
-                render_uploaded_executive_summary(study_name, all_metrics)
-            
-            elif active_tab == "⚠️ Critical Actions":
-                render_uploaded_critical_actions(study_name, all_metrics)
-            
-            elif active_tab == "📊 Study-Level Insights":
-                render_uploaded_study_insights(study_name, study_metrics)
-            
-            elif active_tab == "🔍 Deep Dive Analysis":
-                render_uploaded_deep_dive(study_name, all_metrics)
-            
-            elif active_tab == "💬 Ask AI":
-                render_uploaded_ask_ai(study_name, study_metrics, study_df)
+            Navigate to other views for detailed analysis:
+            - **📊 Executive Dashboard** - Portfolio-level insights and comparisons
+            - **🔍 Study Analysis** - Detailed study metrics and performance
+            - **📈 CRA Dashboard** - Site monitoring, queries, and action items
+            - **🤖 AI Insights** - AI-powered recommendations and deep analysis
+            """)
     
     elif uploaded_files and not study_name:
         st.warning("⚠️ Please enter a study name to continue")
@@ -1960,27 +1927,8 @@ def render_sidebar():
         "⚙️ Settings"
     ])
     
-    # Sub-navigation for Upload & Analyze
+    # No sub-navigation needed - all features are in main navigation
     uploaded_tab = None
-    if page == "📤 Upload & Analyze":
-        if 'uploaded_study_name' in st.session_state and st.session_state.uploaded_study_name:
-            st.sidebar.markdown("---")
-            st.sidebar.subheader("Analysis Tabs")
-            uploaded_tab = st.sidebar.radio(
-                "Choose Analysis:",
-                [
-                    "📊 Overview",
-                    "🏥 Site Performance",
-                    "📝 Query Management",
-                    "⚠️ Action Items",
-                    "📋 Executive Summary",
-                    "⚠️ Critical Actions",
-                    "📊 Study-Level Insights",
-                    "🔍 Deep Dive Analysis",
-                    "💬 Ask AI"
-                ],
-                key="uploaded_analysis_tab"
-            )
     
     st.sidebar.markdown("---")
     st.sidebar.info("""
@@ -2035,7 +1983,7 @@ def main():
     elif page == "🤖 AI Insights":
         render_ai_insights_page(all_data, all_metrics, risk_engine)
     elif page == "📤 Upload & Analyze":
-        render_upload_analyze(uploaded_tab)
+        render_upload_analyze()
     elif page == "⚙️ Settings":
         st.header("⚙️ Settings")
         st.write("Configuration options:")

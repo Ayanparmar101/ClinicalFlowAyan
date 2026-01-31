@@ -398,13 +398,18 @@ def render_executive_dashboard(all_metrics, risk_engine):
     if study_summary_data:
         study_summary_df = pd.DataFrame(study_summary_data)
         
-        # Bar chart
+        # Bar chart with adjusted width for single study
         fig = px.bar(study_summary_df, x="Study", y="Avg DQI", 
                      title="Data Quality Index by Study",
                      labels={"Avg DQI": "Average DQI Score"},
                      color="Avg DQI",
                      color_continuous_scale="RdYlGn")
-        st.plotly_chart(fig, width='stretch')
+        
+        # Make bar thinner if only one study
+        if len(study_summary_df) == 1:
+            fig.update_traces(width=0.3)
+        
+        st.plotly_chart(fig, use_container_width=True)
         
         # Data table
         st.dataframe(study_summary_df, use_container_width=True)

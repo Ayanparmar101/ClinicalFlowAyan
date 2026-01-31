@@ -268,6 +268,137 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Dark theme CSS - apply if dark mode is enabled
+if 'theme' in st.session_state and st.session_state.theme == 'dark':
+    st.markdown("""
+    <style>
+        /* Dark theme overrides */
+        .stApp {
+            background-color: #1a202c;
+        }
+        
+        .main .block-container {
+            background-color: #1a202c;
+        }
+        
+        /* Sidebar dark */
+        [data-testid="stSidebar"] {
+            background: #2d3748;
+            border-right: 1px solid #4a5568;
+        }
+        
+        [data-testid="stSidebar"] .stRadio > label {
+            color: #e2e8f0 !important;
+        }
+        
+        [data-testid="stSidebar"] [role="radiogroup"] label {
+            background: #374151;
+            color: #e2e8f0 !important;
+            border-color: #4a5568;
+        }
+        
+        [data-testid="stSidebar"] [role="radiogroup"] label:hover {
+            background: #4a5568;
+        }
+        
+        [data-testid="stSidebar"] [role="radiogroup"] label[data-checked="true"] {
+            background: #3b82f6;
+            color: white !important;
+        }
+        
+        [data-testid="stSidebar"] .stMarkdown {
+            color: #cbd5e0 !important;
+        }
+        
+        /* Headers dark */
+        .main-header {
+            color: #f7fafc !important;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            color: #f7fafc !important;
+        }
+        
+        /* Text colors */
+        p, span, div, label {
+            color: #e2e8f0 !important;
+        }
+        
+        /* Metric cards dark */
+        [data-testid="stMetric"] {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+        
+        [data-testid="stMetric"] label {
+            color: #cbd5e0 !important;
+        }
+        
+        [data-testid="stMetric"] [data-testid="stMetricValue"] {
+            color: #f7fafc !important;
+        }
+        
+        /* Expanders dark */
+        [data-testid="stExpander"] {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+        
+        /* Dataframes dark */
+        [data-testid="stDataFrame"] {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+        
+        /* Tabs dark */
+        .stTabs [data-baseweb="tab-list"] {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+        
+        .stTabs [data-baseweb="tab"] {
+            color: #cbd5e0 !important;
+        }
+        
+        .stTabs [data-baseweb="tab"]:hover {
+            background: #374151;
+        }
+        
+        /* Info/alert boxes dark */
+        .stAlert {
+            background: #2d3748 !important;
+            color: #e2e8f0 !important;
+        }
+        
+        /* Inputs dark */
+        input, textarea, select {
+            background: #374151 !important;
+            color: #e2e8f0 !important;
+            border-color: #4a5568 !important;
+        }
+        
+        [data-baseweb="select"], [data-baseweb="input"] {
+            background: #374151 !important;
+        }
+        
+        /* File uploader dark */
+        [data-testid="stFileUploader"] {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+        
+        /* HR dark */
+        hr {
+            background: #4a5568;
+        }
+        
+        /* Sidebar toggle button */
+        [data-testid="collapsedControl"] {
+            color: #3b82f6 !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
 
 @st.cache_data
 def load_and_process_data(_version=5):  # Increment this to bust cache
@@ -2178,7 +2309,38 @@ def main():
         render_upload_analyze()
     elif page == "⚙️ Settings":
         st.header("⚙️ Settings")
-        st.write("Configuration options:")
+        
+        # Theme toggle
+        st.subheader("🎨 Appearance")
+        
+        # Initialize theme in session state
+        if 'theme' not in st.session_state:
+            st.session_state.theme = 'light'
+        
+        col1, col2 = st.columns([1, 3])
+        with col1:
+            theme = st.radio(
+                "Theme",
+                ["Light", "Dark"],
+                index=0 if st.session_state.theme == 'light' else 1,
+                horizontal=True
+            )
+            
+            if theme == "Dark":
+                st.session_state.theme = 'dark'
+            else:
+                st.session_state.theme = 'light'
+        
+        with col2:
+            if st.session_state.theme == 'dark':
+                st.info("🌙 Dark mode enabled - Reload the page to apply changes")
+            else:
+                st.info("☀️ Light mode enabled")
+        
+        st.markdown("---")
+        
+        # Other settings
+        st.subheader("📁 Data Configuration")
         st.text_input("Data Directory", str(DATA_PATH), disabled=True)
         st.info("API keys and other settings are configured in the .env file.")
 

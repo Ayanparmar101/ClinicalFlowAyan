@@ -51,14 +51,14 @@ st.markdown("""
     /* Sidebar - clean white */
     [data-testid="stSidebar"] {
         background: #ffffff;
-        padding-top: 2rem;
+        padding-top: 0.5rem;
         border-right: 1px solid #e2e8f0;
     }
     
     [data-testid="stSidebar"] .stRadio > label {
         font-weight: 600;
-        font-size: 1rem;
-        margin-bottom: 1rem;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
         color: #1a202c !important;
     }
     

@@ -563,8 +563,6 @@ def render_ai_insights(study_name, subject_df, study_metrics):
     """Render AI-generated insights"""
     st.subheader("🤖 AI-Powered Insights")
     
-    st.info("AI insights are powered by Gemini AI. Configuration is set in .env file.")
-    
     # Generate summary metrics for AI
     summary = {
         "total_subjects": len(subject_df),

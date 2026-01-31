@@ -76,10 +76,7 @@ An **AI-powered intelligence platform** that:
 
 ## 🎯 Demo
 
-```bash
-# Launch the platform in 30 seconds
-streamlit run src/dashboard/app.py
-```
+**🌐 [Try the Live Platform Now!](https://clinicalflowayan.streamlit.app/)** - Experience the full platform in your browser
 
 ### 📸 Key Capabilities
 
@@ -99,7 +96,14 @@ streamlit run src/dashboard/app.py
 
 <div align="center">
 
-### 📊 Executive Dashboard
+### � Data Processing Pipeline
+*End-to-end data flow from ingestion to insights*
+
+![Data Pipeline](docs/screenshots/Pipeline.jpeg)
+
+---
+
+### �📊 Executive Dashboard
 *Real-time portfolio overview with key metrics*
 
 ![Executive Dashboard](docs/screenshots/Exec_dashboard.jpeg)

@@ -55,6 +55,25 @@ st.markdown("""
         color: #2ca02c;
         font-weight: bold;
     }
+    
+    /* Hide top right menu and icons */
+    header[data-testid="stHeader"] {
+        display: none;
+    }
+    
+    /* Hide bottom right icons */
+    .stActionButton {
+        display: none !important;
+    }
+    
+    /* Alternative selectors for bottom right elements */
+    div[data-testid="stStatusWidget"] {
+        display: none !important;
+    }
+    
+    button[kind="header"] {
+        display: none !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
